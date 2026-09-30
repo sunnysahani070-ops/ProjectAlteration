@@ -440,7 +440,7 @@ async function main() {
       where: { wellId: activeWell.id },
     });
 
-    let seq = 1000n;
+    let seq = BigInt(1000);
     const baseTime = new Date("2026-09-28T14:00:00Z").getTime();
 
     for (let i = 0; i < dljTelemetry.length; i++) {

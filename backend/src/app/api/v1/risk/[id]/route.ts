@@ -37,6 +37,9 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
     let topFeatures: any[] = [];
     let recommendation = "";
 
+    let modelVersion = "rf-mud-loss-v1";
+    let isLive = true;
+
     try {
       const mlPayload = telemetryFeatureMapper.mapToMlRiskPayload(
         latestReading
@@ -75,10 +78,13 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
       mudLossLevel = prediction.level;
       topFeatures = prediction.top_contributing_features;
       recommendation = prediction.mitigation_recommendation;
-    } catch {
-      // Fallback if ML microservice is initializing
+      modelVersion = prediction.model_version || "rf-mud-loss-v1";
+    } catch (err: any) {
+      console.warn(`[Risk API] ML hazard service unreachable for well ${well.wellId}: ${err?.message || err}. Serving baseline fallback.`);
       mudLossProb = 0.78;
       mudLossLevel = "HIGH";
+      modelVersion = "heuristic-baseline-fallback";
+      isLive = false;
     }
 
     const risks = [
@@ -90,7 +96,8 @@ export async function GET(req: NextRequest, { params }: RouteParams) {
         severity: mudLossLevel,
         depth,
         depth_md: depth,
-        model_version: "rf-mud-loss-v1",
+        model_version: modelVersion,
+        is_live_prediction: isLive,
         evidence: ["E-001", "E-002", "E-003"],
         topContributingFeatures: topFeatures,
         recommendation,

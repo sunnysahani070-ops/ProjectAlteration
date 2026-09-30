@@ -64,7 +64,12 @@ export class MLClient {
   private readonly baseUrl: string;
 
   constructor(baseUrl?: string) {
-    this.baseUrl = (baseUrl || process.env.ML_SERVICE_URL || "http://127.0.0.1:8000").replace(/\/$/, "");
+    this.baseUrl = (
+      baseUrl ||
+      process.env.ML_SERVICE_URL ||
+      process.env.AI_ML_SERVICE_URL ||
+      "http://127.0.0.1:8000"
+    ).replace(/\/$/, "");
   }
 
   async checkHealth(): Promise<{

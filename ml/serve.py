@@ -20,9 +20,10 @@ from pydantic import BaseModel, Field
 import uvicorn
 import requests
 
-# Add ML root to path
+# Add ML root and project root to path
 ML_ROOT = Path(__file__).resolve().parent
 sys.path.insert(0, str(ML_ROOT))
+sys.path.insert(0, str(ML_ROOT.parent))
 
 from src.risk.mud_loss_model import MudLossRiskModel
 from src.risk.schemas import RiskPredictionRequest, RiskPredictionResult

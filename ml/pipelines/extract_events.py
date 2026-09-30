@@ -6,7 +6,10 @@ import argparse
 import json
 from pathlib import Path
 
-from ml.src.information_extraction import extract_events
+try:
+    from ml.src.information_extraction import extract_events
+except ModuleNotFoundError:
+    from src.information_extraction import extract_events
 
 
 def process_processed_document(document_dir: str | Path) -> Path:
